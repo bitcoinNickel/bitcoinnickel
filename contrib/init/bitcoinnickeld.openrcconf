@@ -1,0 +1,33 @@
+# /etc/conf.d/bitcoinnickeld: config file for /etc/init.d/bitcoinnickeld
+
+# Config file location
+#BITCOINNICKELD_CONFIGFILE="/etc/bitcoinnickel/bitcoinnickel.conf"
+
+# What directory to write pidfile to?  (created and owned by $BITCOINNICKELD_USER)
+#BITCOINNICKELD_PIDDIR="/var/run/bitcoinnickeld"
+
+# What filename to give the pidfile
+#BITCOINNICKELD_PIDFILE="${BITCOINNICKELD_PIDDIR}/bitcoinnickeld.pid"
+
+# Where to write bitcoinnickeld data (be mindful that the blockchain is large)
+#BITCOINNICKELD_DATADIR="/var/lib/bitcoinnickeld"
+
+# User and group to own bitcoinnickeld process
+#BITCOINNICKELD_USER="bitcoinnickel"
+#BITCOINNICKELD_GROUP="bitcoinnickel"
+
+# Path to bitcoinnickeld executable
+#BITCOINNICKELD_BIN="/usr/bin/bitcoinnickeld"
+
+# Nice value to run bitcoinnickeld under
+#BITCOINNICKELD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#BITCOINNICKELD_OPTS=""
+
+# The timeout in seconds OpenRC will wait for bitcoinnickeld to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+BITCOINNICKELD_SIGTERM_TIMEOUT=60
