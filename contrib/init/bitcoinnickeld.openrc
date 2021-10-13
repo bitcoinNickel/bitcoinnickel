@@ -1,0 +1,92 @@
+#!/sbin/openrc-run
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/bitcoinnickel/.bitcoinnickel" ]; then
+	BITCOINNICKELD_DEFAULT_DATADIR="/var/lib/bitcoinnickel/.bitcoinnickel"
+else
+	BITCOINNICKELD_DEFAULT_DATADIR="/var/lib/bitcoinnickeld"
+fi
+
+BITCOINNICKELD_CONFIGFILE=${BITCOINNICKELD_CONFIGFILE:-/etc/bitcoinnickel/bitcoinnickel.conf}
+BITCOINNICKELD_PIDDIR=${BITCOINNICKELD_PIDDIR:-/var/run/bitcoinnickeld}
+BITCOINNICKELD_PIDFILE=${BITCOINNICKELD_PIDFILE:-${BITCOINNICKELD_PIDDIR}/bitcoinnickeld.pid}
+BITCOINNICKELD_DATADIR=${BITCOINNICKELD_DATADIR:-${BITCOINNICKELD_DEFAULT_DATADIR}}
+BITCOINNICKELD_USER=${BITCOINNICKELD_USER:-${BITCOINNICKEL_USER:-bitcoinnickel}}
+BITCOINNICKELD_GROUP=${BITCOINNICKELD_GROUP:-bitcoinnickel}
+BITCOINNICKELD_BIN=${BITCOINNICKELD_BIN:-/usr/bin/bitcoinnickeld}
+BITCOINNICKELD_NICE=${BITCOINNICKELD_NICE:-${NICELEVEL:-0}}
+BITCOINNICKELD_OPTS="${BITCOINNICKELD_OPTS:-${BITCOINNICKEL_OPTS}}"
+
+name="BitcoinNickel Core Daemon"
+description="BitcoinNickel cryptocurrency P2P network daemon"
+
+command="/usr/bin/bitcoinnickeld"
+command_args="-pid=\"${BITCOINNICKELD_PIDFILE}\" \
+		-conf=\"${BITCOINNICKELD_CONFIGFILE}\" \
+		-datadir=\"${BITCOINNICKELD_DATADIR}\" \
+		-daemon \
+		${BITCOINNICKELD_OPTS}"
+
+required_files="${BITCOINNICKELD_CONFIGFILE}"
+start_stop_daemon_args="-u ${BITCOINNICKELD_USER} \
+			-N ${BITCOINNICKELD_NICE} -w 2000"
+pidfile="${BITCOINNICKELD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${BITCOINNICKELD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${BITCOINNICKELD_USER}:${BITCOINNICKELD_GROUP}" \
+	"${BITCOINNICKELD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${BITCOINNICKELD_USER}:${BITCOINNICKELD_GROUP}" \
+	"${BITCOINNICKELD_PIDDIR}"
+
+	checkpath -f \
+	-o ${BITCOINNICKELD_USER}:${BITCOINNICKELD_GROUP} \
+	-m 0660 \
+	${BITCOINNICKELD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${BITCOINNICKELD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run bitcoinnickeld."
+		eerror "The setting must appear in ${BITCOINNICKELD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following "
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"BitcoinNickel Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

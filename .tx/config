@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com
+
+[bitcoinnickel.qt-translation-017x]
+file_filter = src/qt/locale/bitcoinnickel_<lang>.ts
+source_file = src/qt/locale/bitcoinnickel_en.ts
+source_lang = en
