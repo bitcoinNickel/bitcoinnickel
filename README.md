@@ -68,13 +68,13 @@ The BitcoinNickel repo's [root README](/README.md) contains relevant information
 * Discuss general BitcoinNickel development on #bitcoinnickel-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=bitcoinnickel-dev).
 
 ### Miscellaneous
-- [Assets Attribution](assets-attribution.md)
-- [Files](files.md)
-- [Fuzz-testing](fuzzing.md)
-- [Reduce Traffic](reduce-traffic.md)
-- [Tor Support](tor.md)
-- [Init Scripts (systemd/upstart/openrc)](init.md)
-- [ZMQ](zmq.md)
+- [Assets Attribution](doc/assets-attribution.md)
+- [Files](doc/files.md)
+- [Fuzz-testing](doc/fuzzing.md)
+- [Reduce Traffic](doc/reduce-traffic.md)
+- [Tor Support](doc/tor.md)
+- [Init Scripts (systemd/upstart/openrc)](doc/init.md)
+- [ZMQ](doc/zmq.md)
 
 License
 ---------------------
