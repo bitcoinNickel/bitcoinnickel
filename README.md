@@ -38,29 +38,29 @@ Building
 The following are developer notes on how to build BitcoinNickel Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [Dependencies](doc/dependencies.md)
-- [macOS Build Notes](build-osx.md)
-- [Unix Build Notes](build-unix.md)
-- [Windows Build Notes](build-windows.md)
-- [OpenBSD Build Notes](build-openbsd.md)
-- [NetBSD Build Notes](build-netbsd.md)
-- [Gitian Building Guide](gitian-building.md)
+- [macOS Build Notes](doc/build-osx.md)
+- [Unix Build Notes](doc/build-unix.md)
+- [Windows Build Notes](doc/build-windows.md)
+- [OpenBSD Build Notes](doc/build-openbsd.md)
+- [NetBSD Build Notes](doc/build-netbsd.md)
+- [Gitian Building Guide](doc/gitian-building.md)
 
 Development
 ---------------------
 The BitcoinNickel repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
-- [Developer Notes](developer-notes.md)
-- [Release Notes](release-notes.md)
-- [Release Process](release-process.md)
+- [Developer Notes](doc/developer-notes.md)
+- [Release Notes](doc/release-notes.md)
+- [Release Process](doc/release-process.md)
 - [Source Code Documentation (External Link)](https://dev.visucore.com/bitcoinnickel/doxygen/)
-- [Translation Process](translation_process.md)
-- [Translation Strings Policy](translation_strings_policy.md)
-- [Travis CI](travis-ci.md)
-- [Unauthenticated REST Interface](REST-interface.md)
-- [Shared Libraries](shared-libraries.md)
-- [BIPS](bips.md)
-- [Dnsseed Policy](dnsseed-policy.md)
-- [Benchmarking](benchmarking.md)
+- [Translation Process](doc/translation_process.md)
+- [Translation Strings Policy](doc/translation_strings_policy.md)
+- [Travis CI](doc/travis-ci.md)
+- [Unauthenticated REST Interface](doc/REST-interface.md)
+- [Shared Libraries](doc/shared-libraries.md)
+- [BIPS](doc/bips.md)
+- [Dnsseed Policy](doc/dnsseed-policy.md)
+- [Benchmarking](doc/benchmarking.md)
 
 ### Resources
 * Discuss on the [BitcoinNickelTalk](https://bitcoinnickeltalk.org/) forums, in the [Development & Technical Discussion board](https://bitcoinnickeltalk.org/index.php?board=6.0).
