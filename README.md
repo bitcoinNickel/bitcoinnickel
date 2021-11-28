@@ -18,7 +18,7 @@ All steps are to be run from your terminal emulator, i.e. the command line.
 
         macOS (with command line tools and Homebrew already installed): brew install automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf python qt libevent qrencode ccache
 
-    Download the Bitcoin source files by git cloning the repository:
+    Download the BitcoinNickel source files by git cloning the repository:
         git clone https://github.com/bitcoinNickel/bitcoinnickel.git
 
     Install Berkeley DB (BDB) v4.8, a backward-compatible version needed for the wallet, using the script in /contrib:
@@ -36,7 +36,7 @@ All steps are to be run from your terminal emulator, i.e. the command line.
 
     Compile from a tagged release branch instead of master, unless you want to test the bleeding edge:
         git tag -n | sort -V to see tags and descriptions ordered by most recent last
-        git checkout <TAG> to use a tagged release, for example: git checkout v0.19.0.1
+        git checkout <TAG> to use a tagged release, for example: git checkout v0.0.0.1
 
     Compile BitcoinNickel from source:
         ./autogen.sh
