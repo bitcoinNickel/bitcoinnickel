@@ -83,12 +83,12 @@ public:
         consensus.BIP65Height = 0; 
         consensus.BIP66Height = 0; 
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 10 * 60;
-        consensus.nPowTargetSpacing = 5 * 60;
+        consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
+        consensus.nPowTargetSpacing = 10 * 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 2; // 95% of 2
-        consensus.nMinerConfirmationWindow = 2; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nRuleChangeActivationThreshold = 1815; // 90% of 2016
+        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -282,6 +282,10 @@ public:
         checkpointData = {
             {
                 {0, uint256S("00000af03332f931df43b4cc7ee308daea248ea0a4d53482043d3d572ea7cc7e")},
+		{1025, uint256S("000000000000006cef2babaa1cde28161d6977dc095ed159050558ac4e8c48df")},
+		{2002, uint256S("0000000000000119fd6803751f99e1a9e92d3c2dc5c3879c94f849b46ecee2ff")},
+
+
             }
         };
 
