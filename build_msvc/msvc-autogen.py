@@ -83,8 +83,8 @@ def parse_config_into_bitcoinnickel_config():
         if header in config_dict:
             template[index] = line.replace("$", f"{config_dict[header]}")
 
-    with open(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickel_config.h'), "w", encoding="utf8") as btc_config:
-        btc_config.writelines(template)
+    with open(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickel_config.h'), "w", encoding="utf8") as bitcoinnickel_config:
+        bitcoinnickel_config.writelines(template)
 
 def set_properties(vcxproj_filename, placeholder, content):
     with open(vcxproj_filename + '.in', 'r', encoding='utf-8') as vcxproj_in_file:
