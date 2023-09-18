@@ -50,7 +50,7 @@ def parse_makefile(makefile):
                     lib_sources[current_lib] = []
                     break
 
-def parse_config_into_btc_config():
+def parse_config_into_bitcoinnickel_config():
     def find_between( s, first, last ):
         try:
             start = s.index( first ) + len( first )
