@@ -109,7 +109,7 @@ def main():
             content += '      <ObjectFileName>$(IntDir)' + object_filename + '</ObjectFileName>\n'
             content += '    </ClCompile>\n'
         set_properties(vcxproj_filename, '@SOURCE_FILES@\n', content)
-    parse_config_into_btc_config()
+    parse_config_into_bitcoinnickel_config()
     copyfile(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickel_config.h'), os.path.join(SOURCE_DIR, 'config/bitcoinnickel-config.h'))
 
 if __name__ == '__main__':
