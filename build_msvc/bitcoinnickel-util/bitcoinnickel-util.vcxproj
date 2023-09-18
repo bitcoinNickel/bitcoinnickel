@@ -9,19 +9,19 @@
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\bitcoinnickelnickel-util.cpp" />
+    <ClCompile Include="..\..\src\bitcoinnickel-util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libbitcoinnickelnickel_consensus\libbitcoinnickelnickel_consensus.vcxproj">
+    <ProjectReference Include="..\libbitcoinnickel_consensus\libbitcoinnickel_consensus.vcxproj">
       <Project>{2b384fa8-9ee1-4544-93cb-0d733c25e8ce}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoinnickelnickel_common\libbitcoinnickelnickel_common.vcxproj">
+    <ProjectReference Include="..\libbitcoinnickel_common\libbitcoinnickel_common.vcxproj">
       <Project>{7c87e378-df58-482e-aa2f-1bc129bc19ce}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoinnickelnickel_crypto\libbitcoinnickelnickel_crypto.vcxproj">
+    <ProjectReference Include="..\libbitcoinnickel_crypto\libbitcoinnickel_crypto.vcxproj">
       <Project>{6190199c-6cf4-4dad-bfbd-93fa72a760c1}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libbitcoinnickelnickel_util\libbitcoinnickelnickel_util.vcxproj">
+    <ProjectReference Include="..\libbitcoinnickel_util\libbitcoinnickel_util.vcxproj">
       <Project>{b53a5535-ee9d-4c6f-9a26-f79ee3bc3754}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libunivalue\libunivalue.vcxproj">

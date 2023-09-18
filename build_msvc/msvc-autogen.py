@@ -12,15 +12,15 @@ SOURCE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'
 DEFAULT_PLATFORM_TOOLSET = R'v143'
 
 libs = [
-    'libbitcoinnickelnickel_cli',
-    'libbitcoinnickelnickel_common',
-    'libbitcoinnickelnickel_crypto',
-    'libbitcoinnickelnickel_node',
-    'libbitcoinnickelnickel_util',
-    'libbitcoinnickelnickel_wallet_tool',
-    'libbitcoinnickelnickel_wallet',
-    'libbitcoinnickelnickel_zmq',
-    'bench_bitcoinnickelnickel',
+    'libbitcoinnickel_cli',
+    'libbitcoinnickel_common',
+    'libbitcoinnickel_crypto',
+    'libbitcoinnickel_node',
+    'libbitcoinnickel_util',
+    'libbitcoinnickel_wallet_tool',
+    'libbitcoinnickel_wallet',
+    'libbitcoinnickel_zmq',
+    'bench_bitcoinnickel',
     'libtest_util',
 ]
 
@@ -72,7 +72,7 @@ def parse_config_into_btc_config():
     version = config_dict["PACKAGE_VERSION"].strip('"')
     config_dict["PACKAGE_STRING"] = f"\"Bitcoinnickel Core {version}\""
 
-    with open(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickelnickel_config.h.in'), "r", encoding="utf8") as template_file:
+    with open(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickel_config.h.in'), "r", encoding="utf8") as template_file:
         template = template_file.readlines()
 
     for index, line in enumerate(template):
@@ -82,7 +82,7 @@ def parse_config_into_btc_config():
         if header in config_dict:
             template[index] = line.replace("$", f"{config_dict[header]}")
 
-    with open(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickelnickel_config.h'), "w", encoding="utf8") as btc_config:
+    with open(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickel_config.h'), "w", encoding="utf8") as btc_config:
         btc_config.writelines(template)
 
 def set_properties(vcxproj_filename, placeholder, content):
@@ -110,7 +110,7 @@ def main():
             content += '    </ClCompile>\n'
         set_properties(vcxproj_filename, '@SOURCE_FILES@\n', content)
     parse_config_into_btc_config()
-    copyfile(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickelnickel_config.h'), os.path.join(SOURCE_DIR, 'config/bitcoinnickelnickel-config.h'))
+    copyfile(os.path.join(SOURCE_DIR,'../build_msvc/bitcoinnickel_config.h'), os.path.join(SOURCE_DIR, 'config/bitcoinnickel-config.h'))
 
 if __name__ == '__main__':
     main()

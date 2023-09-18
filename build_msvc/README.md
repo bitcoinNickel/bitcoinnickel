@@ -46,7 +46,7 @@ nmake install
 
 One could speed up building with [`jom`](https://wiki.qt.io/Jom), a replacement for `nmake` which makes use of all CPU cores.
 
-To build Bitcoinnickel Core without Qt, unload or disable the `bitcoinnickelnickel-qt`, `libbitcoinnickelnickel_qt` and `test_bitcoinnickelnickel-qt` projects.
+To build Bitcoinnickel Core without Qt, unload or disable the `bitcoinnickel-qt`, `libbitcoinnickel_qt` and `test_bitcoinnickel-qt` projects.
 
 
 Building
@@ -62,19 +62,19 @@ python build_msvc\msvc-autogen.py
 3. To build from the command-line with the Visual Studio toolchain use:
 
 ```cmd
-msbuild build_msvc\bitcoinnickelnickel.sln -property:Configuration=Release -maxCpuCount -verbosity:minimal
+msbuild build_msvc\bitcoinnickel.sln -property:Configuration=Release -maxCpuCount -verbosity:minimal
 ```
 
-Alternatively, open the `build_msvc/bitcoinnickelnickel.sln` file in Visual Studio.
+Alternatively, open the `build_msvc/bitcoinnickel.sln` file in Visual Studio.
 
 Security
 ---------------------
 [Base address randomization](https://learn.microsoft.com/en-us/cpp/build/reference/dynamicbase-use-address-space-layout-randomization) is used to make Bitcoinnickel Core more secure. When building Bitcoinnickel using the `build_msvc` process base address randomization can be disabled by editing `common.init.vcproj` to change `RandomizedBaseAddress` from `true` to `false` and then rebuilding the project.
 
-To check if `bitcoinnickelnickeld` has `RandomizedBaseAddress` enabled or disabled run
+To check if `bitcoinnickeld` has `RandomizedBaseAddress` enabled or disabled run
 
 ```
-.\dumpbin.exe /headers src/bitcoinnickelnickeld.exe
+.\dumpbin.exe /headers src/bitcoinnickeld.exe
 ```
 
 If is it enabled then in the output `Dynamic base` will be listed in the `DLL characteristics` under `OPTIONAL HEADER VALUES` as shown below
