@@ -1,22 +1,26 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Bitcoin Core developers
-// Copyright (c) 2020 The BitcoinNickel Core developers
+// Copyright (c) 2009-2022 The Bitcoinnickel Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <rpc/protocol.h>
+#include <rpc/request.h>
 
+#include <util/fs.h>
+
+#include <common/args.h>
+#include <logging.h>
 #include <random.h>
-#include <tinyformat.h>
-#include <util.h>
-#include <utilstrencodings.h>
-#include <utiltime.h>
-#include <version.h>
+#include <rpc/protocol.h>
+#include <util/fs_helpers.h>
+#include <util/strencodings.h>
 
 #include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 /**
- * JSON-RPC protocol.  BitcoinNickel speaks version 1.0 for maximum compatibility,
+ * JSON-RPC protocol.  Bitcoinnickel speaks version 1.0 for maximum compatibility,
  * but uses JSON-RPC 1.1/2.0 standards for parts of the 1.0 standard that were
  * unspecified (HTTP errors and contents of 'error').
  *
@@ -64,33 +68,33 @@ UniValue JSONRPCError(int code, const std::string& message)
  */
 static const std::string COOKIEAUTH_USER = "__cookie__";
 /** Default name for auth cookie file */
-static const std::string COOKIEAUTH_FILE = ".cookie";
+static const char* const COOKIEAUTH_FILE = ".cookie";
 
 /** Get name of RPC authentication cookie file */
 static fs::path GetAuthCookieFile(bool temp=false)
 {
-    std::string arg = gArgs.GetArg("-rpccookiefile", COOKIEAUTH_FILE);
+    fs::path arg = gArgs.GetPathArg("-rpccookiefile", COOKIEAUTH_FILE);
     if (temp) {
         arg += ".tmp";
     }
-    return AbsPathForConfigVal(fs::path(arg));
+    return AbsPathForConfigVal(gArgs, arg);
 }
 
 bool GenerateAuthCookie(std::string *cookie_out)
 {
     const size_t COOKIE_SIZE = 32;
     unsigned char rand_pwd[COOKIE_SIZE];
-    GetRandBytes(rand_pwd, COOKIE_SIZE);
-    std::string cookie = COOKIEAUTH_USER + ":" + HexStr(rand_pwd, rand_pwd+COOKIE_SIZE);
+    GetRandBytes(rand_pwd);
+    std::string cookie = COOKIEAUTH_USER + ":" + HexStr(rand_pwd);
 
     /** the umask determines what permissions are used to create this file -
-     * these are set to 077 in init.cpp unless overridden with -sysperms.
+     * these are set to 0077 in common/system.cpp.
      */
     std::ofstream file;
     fs::path filepath_tmp = GetAuthCookieFile(true);
-    file.open(filepath_tmp.string().c_str());
+    file.open(filepath_tmp);
     if (!file.is_open()) {
-        LogPrintf("Unable to open cookie authentication file %s for writing\n", filepath_tmp.string());
+        LogPrintf("Unable to open cookie authentication file %s for writing\n", fs::PathToString(filepath_tmp));
         return false;
     }
     file << cookie;
@@ -98,10 +102,10 @@ bool GenerateAuthCookie(std::string *cookie_out)
 
     fs::path filepath = GetAuthCookieFile(false);
     if (!RenameOver(filepath_tmp, filepath)) {
-        LogPrintf("Unable to rename cookie authentication file %s to %s\n", filepath_tmp.string(), filepath.string());
+        LogPrintf("Unable to rename cookie authentication file %s to %s\n", fs::PathToString(filepath_tmp), fs::PathToString(filepath));
         return false;
     }
-    LogPrintf("Generated RPC authentication cookie %s\n", filepath.string());
+    LogPrintf("Generated RPC authentication cookie %s\n", fs::PathToString(filepath));
 
     if (cookie_out)
         *cookie_out = cookie;
@@ -113,7 +117,7 @@ bool GetAuthCookie(std::string *cookie_out)
     std::ifstream file;
     std::string cookie;
     fs::path filepath = GetAuthCookieFile();
-    file.open(filepath.string().c_str());
+    file.open(filepath);
     if (!file.is_open())
         return false;
     std::getline(file, cookie);
@@ -129,26 +133,59 @@ void DeleteAuthCookie()
     try {
         fs::remove(GetAuthCookieFile());
     } catch (const fs::filesystem_error& e) {
-        LogPrintf("%s: Unable to remove random auth cookie file: %s\n", __func__, e.what());
+        LogPrintf("%s: Unable to remove random auth cookie file: %s\n", __func__, fsbridge::get_filesystem_error_message(e));
     }
 }
 
-std::vector<UniValue> JSONRPCProcessBatchReply(const UniValue &in, size_t num)
+std::vector<UniValue> JSONRPCProcessBatchReply(const UniValue& in)
 {
     if (!in.isArray()) {
         throw std::runtime_error("Batch must be an array");
     }
+    const size_t num {in.size()};
     std::vector<UniValue> batch(num);
-    for (size_t i=0; i<in.size(); ++i) {
-        const UniValue &rec = in[i];
+    for (const UniValue& rec : in.getValues()) {
         if (!rec.isObject()) {
-            throw std::runtime_error("Batch member must be object");
+            throw std::runtime_error("Batch member must be an object");
         }
-        size_t id = rec["id"].get_int();
+        size_t id = rec["id"].getInt<int>();
         if (id >= num) {
-            throw std::runtime_error("Batch member id larger than size");
+            throw std::runtime_error("Batch member id is larger than batch size");
         }
         batch[id] = rec;
     }
     return batch;
+}
+
+void JSONRPCRequest::parse(const UniValue& valRequest)
+{
+    // Parse request
+    if (!valRequest.isObject())
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Invalid Request object");
+    const UniValue& request = valRequest.get_obj();
+
+    // Parse id now so errors from here on will have the id
+    id = request.find_value("id");
+
+    // Parse method
+    const UniValue& valMethod{request.find_value("method")};
+    if (valMethod.isNull())
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Missing method");
+    if (!valMethod.isStr())
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Method must be a string");
+    strMethod = valMethod.get_str();
+    if (fLogIPs)
+        LogPrint(BCLog::RPC, "ThreadRPCServer method=%s user=%s peeraddr=%s\n", SanitizeString(strMethod),
+            this->authUser, this->peerAddr);
+    else
+        LogPrint(BCLog::RPC, "ThreadRPCServer method=%s user=%s\n", SanitizeString(strMethod), this->authUser);
+
+    // Parse params
+    const UniValue& valParams{request.find_value("params")};
+    if (valParams.isArray() || valParams.isObject())
+        params = valParams;
+    else if (valParams.isNull())
+        params = UniValue(UniValue::VARR);
+    else
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Params must be an array or object");
 }
